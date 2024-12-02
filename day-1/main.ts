@@ -36,3 +36,11 @@ async function readFile(): Promise<string[]> {
 }
 
 main();
+
+
+return {
+  'folke/tokyonight.nvim',
+  lazy = false,
+  priority = 1000,
+  opts = {},
+}
