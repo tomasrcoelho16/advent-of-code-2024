@@ -19,7 +19,7 @@ function isSafeOne(level: string): number {
 }
 
 function isSafeTwo(level: string): number {
-  if (isSafeOne(level) === 1) return 1;
+  if (isSafeOne(level)) return 1;
   const nmbs: string[] = level.split(" ");
   for (let i = 0; i < nmbs.length; i++) {
     const removed = nmbs.splice(i, 1)[0];
