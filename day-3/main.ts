@@ -8,9 +8,9 @@ function multiplications(text: string): number {
   const re = new RegExp(/mul['('](?<first>[0-9]*),(?<second>[0-9]*)[')']/);
   let nextMult = re.exec(text);
   let mul = 0;
-  while (nextMult) {
-    const parcels = nextMult.groups;
-    mul += parcels ? +parcels.first * +parcels.second : 0;
+  while (nextMult?.groups) {
+    const { first, second } = nextMult.groups;
+    mul += +first * +second;
     text = text.slice(nextMult.index);
     text = text.slice(text.indexOf(")") + 1);
     nextMult = re.exec(text);
@@ -25,10 +25,10 @@ function multiplicationsTwo(text: string): number {
   let nextCmd = re.exec(text);
   let enabled = true;
   let mul = 0;
-  while (nextCmd) {
-    const parcels = nextCmd.groups;
-    if (parcels?.permission) enabled = !parcels.permission.includes("n't");
-    else if (enabled) mul += parcels ? +parcels.first * +parcels.second : 0;
+  while (nextCmd?.groups) {
+    const { first, second, permission } = nextCmd.groups;
+    if (permission) enabled = !permission.includes("n't");
+    else if (enabled) mul += +first * +second;
     text = text.slice(nextCmd.index);
     text = text.slice(text.indexOf(")") + 1);
     nextCmd = re.exec(text);
@@ -37,7 +37,7 @@ function multiplicationsTwo(text: string): number {
 }
 
 async function readfile() {
-  const file = Bun.file("input.txt");
+  const file = Bun.file("decoy.txt");
   return await file.text();
 }
 
