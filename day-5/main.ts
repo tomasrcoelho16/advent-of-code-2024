@@ -23,43 +23,36 @@ function updatesCount(updates: string, pairs: Pair): number {
   let cnt = 0;
   for (const update of updates.split("\n")) {
     const curr = update.split(",");
-    if (!checkUpdate(curr, pairs)[0]) cnt += correctUpdate(curr, pairs);
+    const [alreadyOrdered, score] = checkUpdate(curr, pairs);
+    if (!alreadyOrdered) cnt += score;
   }
   return cnt;
 }
 
-//Part 2
-function correctUpdate(update: string[], pairs: Pair): number {
-  let result: Boolean;
-
-  do {
-    const [isOrdered, x, y] = checkUpdate(update, pairs);
-    result = isOrdered;
-
-    if (result) break;
-    const aux = update[x];
-    update[x] = update[y];
-    update[y] = aux;
-  } while (!result);
-
-  return +update[Math.floor(update.length / 2)];
-}
-
-function checkUpdate(update: string[], pairs: Pair): [Boolean, number, number] {
-  let uptOrdered: Boolean = true;
-  let errPosFirst = 0;
-  let errPosSecond = 0;
-  update.forEach((nmb, i, arr) => {
-    for (let j = 0; j < i; j++) {
-      if (pairs[+nmb]?.includes(+arr[j])) {
-        errPosFirst = j;
-        errPosSecond = i;
-        uptOrdered = false;
-        break;
+function checkUpdate(update: string[], pairs: Pair): [Boolean, number] {
+  let count = -1;
+  let firstPos = 0;
+  let secondPos = 0;
+  while (true) {
+    let uptOrdered: Boolean = true;
+    count++;
+    update.forEach((nmb, i, arr) => {
+      for (let j = 0; j < i; j++) {
+        if (pairs[+nmb]?.includes(+arr[j])) {
+          firstPos = j;
+          secondPos = i;
+          uptOrdered = false;
+          break;
+        }
       }
-    }
-  });
-  return [uptOrdered, errPosFirst, errPosSecond];
+    });
+    if (uptOrdered) break;
+    [update[firstPos], update[secondPos]] = [
+      update[secondPos],
+      update[firstPos],
+    ];
+  }
+  return [count === 0, +update[Math.floor(update.length / 2)]];
 }
 
 async function readfile() {
